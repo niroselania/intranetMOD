@@ -1,19 +1,36 @@
 # Intranet Patagonia – mejoras
 
-Se mantiene: logo (config/logo.png), título "Patagonia", tipografía, foto de fondo y el mismo formato de services.yaml / settings.yaml (los archivos viejos siguen funcionando).
+Se mantiene: logo (config/logo.png), título "Patagonia", tipografía, foto de fondo y el mismo formato de services.yaml / settings.yaml.
 
-Nuevo, siguiendo la línea de patagonia-ar.com:
+## Diseño (línea de patagonia-ar.com)
 - Barra negra de avisos arriba (settings.yaml → announcement).
-- Encabezado con la foto de campaña, logo, saludo según la hora y fecha.
-- Buscador de sitios: escribí para filtrar, Enter abre el primero, la tecla "/" lo enfoca, Esc lo limpia.
-- Menú de áreas fijo (LOCAL, ADMINISTRACIÓN, DEPÓSITO…) que marca la sección visible.
-- La foto de campaña queda de fondo en toda la página y los sitios son tarjetas translúcidas (efecto vidrio esmerilado). Al pasar el mouse se ponen blancas, se elevan y las cruza un brillo.
-- Las direcciones de los sitios no se muestran.
-- Opcional por sitio: description (texto corto) e icon (emoji).
-- Pie negro con texto de marca y enlaces (footer_text, footer, footer_links).
-- Mejor lectura en celulares, navegación con teclado y accesibilidad.
-- nginx: compresión, cabeceras de seguridad y caché de la librería.
+- Foto de campaña de fondo en toda la página, saludo según la hora y fecha.
+- Tarjetas translúcidas (vidrio esmerilado); al pasar el mouse se ponen blancas, se elevan y las cruza un brillo. No se muestran las direcciones.
+- Buscador de sitios ("/" lo enfoca, Enter abre el primero, Esc limpia).
+- Menú de áreas fijo y pie de página translúcido.
 
-Cambio de comportamiento: por defecto los sitios se abren en pestaña nueva (settings.yaml → target: _blank). Para volver al comportamiento anterior, borrá esa línea.
+## Cargar sitios desde la web (NUEVO)
+- Cada área tiene una tarjeta "+ Agregar": nombre, link, descripción, ícono y si se abre en pestaña nueva.
+- Al pasar el mouse por un sitio aparecen: ← → (cambiar orden), ✎ (editar) y ✕ (borrar).
+- Botón "+ Nueva área" al final. Un área vacía muestra "Borrar área".
+- Todo se guarda en config/services.yaml (se puede seguir editando a mano).
+- Antes de cada cambio se guarda una copia de respaldo (últimas 50) en el volumen intranet-backups.
 
-Despliegue: igual que antes → docker compose up -d --build
+### Claves (docker-compose.yml → servicio intranet-api)
+- ADMIN_PIN: clave general. Sirve para todas las áreas y es la única que crea o borra áreas.
+  ¡Cambiá "cambiar-esta-clave" antes de desplegar!
+- AREA_PINS: clave propia de cada área, ej. "ADMINISTRACIÓN=1111;DEPÓSITO=2222;MAYORISTA=3333".
+  Cada área edita solo lo suyo. Un área sin clave propia se edita con la clave general.
+- Si dejás las dos vacías, cualquiera en la red puede editar (no recomendado).
+- La clave se pide una vez y se recuerda hasta cerrar el navegador.
+- Después de cambiar claves: docker compose up -d
+
+## Despliegue
+1. IMPORTANTE: antes del primer despliegue, poné TU services.yaml actual dentro de la carpeta config
+   (el que viene acá es de ejemplo). La primera vez se copia al volumen; después manda lo que se cargue desde la web.
+2. docker compose up -d --build
+3. Para editar el archivo a mano en el servidor:
+   docker exec -it intranet-api vi /data/services.yaml
+   Para ver los respaldos: docker exec intranet-api ls /backups
+
+Si se despliega sin el servicio intranet-api, la página funciona igual pero sin los botones de edición.

@@ -198,6 +198,83 @@
     font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: #8a8a8a;
   }
 
+
+  /* ===== Edición desde la web ===== */
+  .item { position: relative; display: flex; }
+  .item > .card { flex: 1; }
+  .tools {
+    position: absolute; top: 8px; right: 8px; z-index: 2; display: flex; gap: 4px;
+    opacity: 0; transform: translateY(-4px); transition: opacity .2s, transform .2s;
+  }
+  .item:hover .tools, .item:focus-within .tools { opacity: 1; transform: none; }
+  @media (hover: none) { .tools { opacity: 1; transform: none; } }
+  .tbtn {
+    width: 28px; height: 28px; display: grid; place-items: center; cursor: pointer;
+    font: 700 .8rem/1 var(--font); color: #fff; border-radius: 50%;
+    background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.35);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  }
+  .tbtn:hover, .tbtn:focus-visible { background: #fff; color: #000; outline: none; }
+  .tbtn.danger:hover, .tbtn.danger:focus-visible { background: #c62828; color: #fff; border-color: #c62828; }
+  .item:hover .card .go, .item:focus-within .card .go { opacity: 0; }
+
+  .add {
+    min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+    cursor: pointer; font: 700 .8rem var(--font); letter-spacing: .16em; text-transform: uppercase;
+    color: rgba(255,255,255,.85); background: rgba(255,255,255,.04);
+    border: 1.5px dashed rgba(255,255,255,.45); border-radius: 6px;
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    transition: background .2s, color .2s, border-color .2s, transform .2s;
+  }
+  .add .plus { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-size: 1.4rem; font-weight: 400; border: 1.5px solid currentColor; }
+  .add:hover, .add:focus-visible { background: rgba(255,255,255,.95); color: #000; border-color: #fff; border-style: solid; transform: translateY(-4px); outline: none; }
+
+  .area-del { margin-inline-start: auto; font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; background: none; border: 0; color: rgba(255,255,255,.7); cursor: pointer; font-family: var(--font); text-shadow: none; }
+  .area-del:hover { color: #fff; text-decoration: underline; }
+  .new-area { align-self: center; padding: 14px 28px; }
+
+  /* Ventana de carga */
+  dialog {
+    margin: auto; width: min(520px, calc(100% - 32px)); border: 0; border-radius: 8px; padding: 0;
+    color: var(--ink); background: #fff; box-shadow: 0 30px 80px rgba(0,0,0,.45);
+  }
+  dialog::backdrop { background: rgba(0,0,0,.55); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  dialog form { padding: 28px 28px 24px; display: grid; gap: 16px; }
+  dialog h3 { font-size: 1.1rem; letter-spacing: .1em; text-transform: uppercase; }
+  dialog h3 small { display: block; margin-top: 4px; font-size: .72rem; font-weight: 400; letter-spacing: .14em; color: var(--muted); }
+  dialog label { display: grid; gap: 6px; font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; }
+  dialog label span.opt { font-weight: 400; color: var(--muted); letter-spacing: .04em; text-transform: none; }
+  dialog input, dialog select, dialog textarea {
+    font: 400 .95rem/1.4 var(--font); color: var(--ink); padding: 11px 12px;
+    border: 1px solid #cfcfcf; border-radius: 4px; background: #fff; width: 100%;
+  }
+  dialog textarea { resize: vertical; min-height: 64px; }
+  dialog input:focus, dialog select:focus, dialog textarea:focus { outline: 2px solid #000; outline-offset: 0; border-color: #000; }
+  .row2 { display: grid; grid-template-columns: 110px 1fr; gap: 12px; }
+  .emojis { display: flex; flex-wrap: wrap; gap: 4px; }
+  .emojis button { font-size: 1.1rem; width: 34px; height: 34px; border: 1px solid #e0e0e0; border-radius: 4px; background: #fafafa; cursor: pointer; }
+  .emojis button:hover { border-color: #000; }
+  .err { color: #c62828; font-size: .85rem; min-height: 1em; }
+  .actions { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+  .btn {
+    font: 700 .78rem var(--font); letter-spacing: .14em; text-transform: uppercase; cursor: pointer;
+    padding: 13px 22px; border-radius: 0; border: 1.5px solid #000; background: #000; color: #fff;
+  }
+  .btn:hover, .btn:focus-visible { background: #fff; color: #000; outline: none; }
+  .btn.ghost { background: #fff; color: #000; }
+  .btn.ghost:hover { background: #000; color: #fff; }
+  .btn.light { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+  .btn.light:hover { background: #fff; color: #000; }
+  .btn[disabled] { opacity: .5; cursor: wait; }
+
+  .toast {
+    position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); z-index: 50;
+    background: #000; color: #fff; padding: 13px 22px; font-size: .85rem; letter-spacing: .04em;
+    border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,.35); opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
   @media (max-width: 600px) {
     .areas ul { justify-content: flex-start; }
     .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -236,6 +313,54 @@
   </div>
   <div class="legal" id="legal">Uso interno</div>
 </footer>
+
+
+<dialog id="dlg">
+  <form id="frm" method="dialog" novalidate>
+    <h3 id="dlgTitle">Agregar sitio<small id="dlgArea"></small></h3>
+    <label>Nombre
+      <input id="fName" maxlength="60" required placeholder="Ej: Facturación">
+    </label>
+    <label>Link
+      <input id="fHref" type="url" maxlength="2000" required placeholder="https://…">
+    </label>
+    <label>Descripción <span class="opt">(opcional, hasta 160 caracteres)</span>
+      <textarea id="fDesc" maxlength="160" placeholder="Para qué sirve este sitio"></textarea>
+    </label>
+    <div class="row2">
+      <label>Ícono <span class="opt">(opcional)</span>
+        <input id="fIcon" maxlength="8" placeholder="📦">
+      </label>
+      <label>Se abre en
+        <select id="fTarget"><option value="_blank">Pestaña nueva</option><option value="_self">La misma pestaña</option></select>
+      </label>
+    </div>
+    <div class="emojis" id="emojis" aria-label="Íconos sugeridos"></div>
+    <label id="pinWrap">Clave del área
+      <input id="fPin" type="password" autocomplete="off" placeholder="Pedísela al responsable del área">
+    </label>
+    <p class="err" id="fErr" role="alert"></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="fCancel">Cancelar</button>
+      <button type="submit" class="btn" id="fSave">Guardar</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="dlgArea2">
+  <form id="frmArea" method="dialog" novalidate>
+    <h3>Nueva área<small>Por ejemplo: RRHH, MARKETING, LOGÍSTICA</small></h3>
+    <label>Nombre del área <input id="aName" maxlength="40" required></label>
+    <label id="aPinWrap">Clave general <input id="aPin" type="password" autocomplete="off"></label>
+    <p class="err" id="aErr" role="alert"></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="aCancel">Cancelar</button>
+      <button type="submit" class="btn" id="aSave">Crear área</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <noscript><p class="msg">Esta página necesita JavaScript habilitado.</p></noscript>
 
@@ -306,27 +431,53 @@ function hostOf(href) {
   try { const u = new URL(href, location.href); return u.host + (u.pathname !== '/' ? u.pathname : ''); } catch { return ''; }
 }
 
-function render(groups, s) {
-  s = s || {};
+// ===== Estado =====
+let S = {}, GROUPS = [], API = false, META = { pin: {}, pin_admin: false };
+const PIN_KEY = 'intranet-pin:';
+const getPin = (k) => sessionStorage.getItem(PIN_KEY + k) || '';
+const setPin = (k, v) => v ? sessionStorage.setItem(PIN_KEY + k, v) : sessionStorage.removeItem(PIN_KEY + k);
+
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+async function api(method, path, body) {
+  const r = await fetch(path, { method, headers: { 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' });
+  let j = {}; try { j = await r.json(); } catch {}
+  if (!r.ok || !j.ok) { const e = new Error(j.error || ('Error ' + r.status)); e.status = r.status; throw e; }
+  return j;
+}
+
+async function refresh() {
+  GROUPS = await loadYaml('config/services.yaml') || [];
+  if (API) { try { META = await api('GET', '/api/meta'); } catch {} }
+  render();
+  $('#q').dispatchEvent(new Event('input'));
+  wireSpy();
+}
+
+function render() {
+  const s = S, groups = GROUPS;
   const main = $('#main'), nav = $('#areas ul');
   main.innerHTML = ''; nav.innerHTML = '';
+  $('#areas').hidden = !Array.isArray(groups) || !groups.length;
   if (!Array.isArray(groups) || !groups.length) {
-    main.innerHTML = '<p class="msg">No hay sitios cargados en services.yaml</p>';
-    $('#areas').hidden = true;
-    return;
+    main.append(el('p', 'msg', 'Todavía no hay áreas cargadas.'));
   }
   const defTarget = s.target || null;
-  groups.forEach(g => {
+  (Array.isArray(groups) ? groups : []).forEach(g => {
     Object.entries(g || {}).forEach(([groupName, items]) => {
       const id = slug(groupName);
       const sec = el('section', 'group'); sec.id = id;
       const h2 = el('h2', null, groupName);
       const grid = el('div', 'grid');
       let n = 0;
-      (items || []).forEach(it => {
+      (items || []).forEach((it, idx) => {
         Object.entries(it || {}).forEach(([name, cfg]) => {
           const href = cfg && cfg.href && safeHref(cfg.href);
           if (!href) return;
+          const item = el('div', 'item');
           const a = el('a', 'card');
           a.href = href;
           const target = cfg.target || defTarget;
@@ -335,22 +486,155 @@ function render(groups, s) {
           if (cfg.icon) a.append(el('span', 'ico', cfg.icon));
           a.append(el('span', 'name', name));
           if (cfg.description) a.append(el('span', 'desc', cfg.description));
-          
           const go = el('span', 'go', target === '_blank' ? '↗' : '→'); go.setAttribute('aria-hidden', 'true');
           a.append(go);
           if (target === '_blank') a.setAttribute('aria-label', name + ' (se abre en una pestaña nueva)');
-          a.dataset.q = norm([groupName, name, cfg.description].join(' '));
           a.title = name;
-          grid.append(a); n++;
+          item.dataset.q = norm([groupName, name, cfg.description].join(' '));
+          item.append(a);
+          if (API) {
+            const tools = el('div', 'tools');
+            const mk = (txt, label, fn, cls) => { const b = el('button', 'tbtn' + (cls ? ' ' + cls : ''), txt); b.type = 'button'; b.title = label; b.setAttribute('aria-label', label + ' ' + name); b.addEventListener('click', fn); return b; };
+            const ref = { area: groupName, index: idx, original: name, cfg };
+            if (idx > 0) tools.append(mk('←', 'Mover antes', () => moveSite(ref, -1)));
+            if (idx < items.length - 1) tools.append(mk('→', 'Mover después', () => moveSite(ref, 1)));
+            tools.append(mk('✎', 'Editar', () => openSite(groupName, ref)));
+            tools.append(mk('✕', 'Borrar', () => delSite(ref), 'danger'));
+            item.append(tools);
+          }
+          grid.append(item); n++;
         });
       });
+      if (API) {
+        const add = el('button', 'add'); add.type = 'button';
+        add.append(el('span', 'plus', '+'), el('span', null, 'Agregar'));
+        add.setAttribute('aria-label', 'Agregar sitio en ' + groupName);
+        add.addEventListener('click', () => openSite(groupName, null));
+        grid.append(add);
+      }
       h2.append(el('small', null, n + (n === 1 ? ' sitio' : ' sitios')));
+      if (API && n === 0) {
+        const d = el('button', 'area-del', 'Borrar área'); d.type = 'button';
+        d.addEventListener('click', () => delArea(groupName));
+        h2.append(d);
+      }
       sec.append(h2, grid);
       main.append(sec);
       const li = el('li'), a = el('a', null, groupName); a.href = '#' + id; li.append(a); nav.append(li);
     });
   });
+  if (API) {
+    const b = el('button', 'btn light new-area', '+ Nueva área'); b.type = 'button';
+    b.addEventListener('click', openArea);
+    main.append(b);
+  }
   main.append(Object.assign(el('p', 'msg empty', 'No hay sitios que coincidan con la búsqueda.'), { id: 'empty' }));
+}
+
+// ===== Ventana de alta / edición =====
+const EMOJIS = ['📦','🧾','💳','📊','📁','🛒','🚚','🏷️','👥','📅','📝','⚙️','🔒','🌐','📞','🏔️'];
+let CUR = null;
+
+function openSite(area, ref) {
+  CUR = { area, ref };
+  $('#dlgTitle').firstChild.textContent = ref ? 'Editar sitio' : 'Agregar sitio';
+  $('#dlgArea').textContent = 'Área: ' + area;
+  const c = ref ? ref.cfg : {};
+  $('#fName').value = ref ? ref.original : '';
+  $('#fHref').value = c.href || '';
+  $('#fDesc').value = c.description || '';
+  $('#fIcon').value = c.icon || '';
+  $('#fTarget').value = c.target || S.target || '_blank';
+  const need = !!META.pin[area];
+  $('#pinWrap').hidden = !need || !!getPin(area);
+  $('#fPin').value = getPin(area);
+  $('#fErr').textContent = '';
+  $('#dlg').showModal();
+  $('#fName').focus();
+}
+
+async function saveSite(ev) {
+  ev.preventDefault();
+  const { area, ref } = CUR;
+  const body = {
+    area, name: $('#fName').value.trim(), href: $('#fHref').value.trim(),
+    description: $('#fDesc').value.trim(), icon: $('#fIcon').value.trim(),
+    target: $('#fTarget').value, pin: $('#fPin').value
+  };
+  if (!body.name) return $('#fErr').textContent = 'Poné un nombre.';
+  if (!/^https?:\/\//i.test(body.href)) return $('#fErr').textContent = 'El link tiene que empezar con http:// o https://';
+  if (ref) { body.index = ref.index; body.original = ref.original; }
+  $('#fSave').disabled = true;
+  try {
+    await api(ref ? 'PUT' : 'POST', '/api/sites', body);
+    setPin(area, body.pin);
+    $('#dlg').close();
+    toast(ref ? 'Cambios guardados' : 'Sitio agregado en ' + area);
+    await refresh();
+  } catch (e) {
+    if (e.status === 401) { setPin(area, ''); $('#pinWrap').hidden = false; $('#fPin').value = ''; $('#fPin').focus(); }
+    $('#fErr').textContent = e.message;
+  } finally { $('#fSave').disabled = false; }
+}
+
+async function askPin(key, admin) {
+  if (!(admin ? META.pin_admin : META.pin[key])) return '';
+  return getPin(key) || prompt(admin ? 'Clave general:' : 'Clave del área ' + key + ':') || null;
+}
+
+async function withPin(key, admin, fn, okMsg) {
+  const pin = await askPin(key, admin);
+  if (pin === null) return;
+  try { await fn(pin); setPin(key, pin); toast(okMsg); await refresh(); }
+  catch (e) { if (e.status === 401) setPin(key, ''); toast(e.message); }
+}
+
+function delSite(ref) {
+  if (!confirm('¿Borrar "' + ref.original + '" de ' + ref.area + '?')) return;
+  withPin(ref.area, false, pin => api('DELETE', '/api/sites', { area: ref.area, index: ref.index, original: ref.original, pin }), 'Sitio borrado');
+}
+
+function moveSite(ref, move) {
+  const c = ref.cfg;
+  withPin(ref.area, false, pin => api('PUT', '/api/sites', {
+    area: ref.area, index: ref.index, original: ref.original, move, pin,
+    name: ref.original, href: c.href, description: c.description || '', icon: c.icon || '', target: c.target || S.target || '_blank'
+  }), 'Orden actualizado');
+}
+
+function openArea() {
+  $('#aName').value = ''; $('#aErr').textContent = '';
+  $('#aPinWrap').hidden = !META.pin_admin || !!getPin('__admin');
+  $('#aPin').value = getPin('__admin');
+  $('#dlgArea2').showModal(); $('#aName').focus();
+}
+
+async function saveArea(ev) {
+  ev.preventDefault();
+  const name = $('#aName').value.trim(), pin = $('#aPin').value;
+  if (!name) return $('#aErr').textContent = 'Poné un nombre.';
+  $('#aSave').disabled = true;
+  try {
+    await api('POST', '/api/areas', { name, pin });
+    setPin('__admin', pin); $('#dlgArea2').close(); toast('Área creada'); await refresh();
+    const sec = document.getElementById(slug(name.toUpperCase())); if (sec) sec.scrollIntoView();
+  } catch (e) {
+    if (e.status === 401) { setPin('__admin', ''); $('#aPinWrap').hidden = false; }
+    $('#aErr').textContent = e.message;
+  } finally { $('#aSave').disabled = false; }
+}
+
+function delArea(name) {
+  if (!confirm('¿Borrar el área ' + name + '?')) return;
+  withPin('__admin', true, pin => api('DELETE', '/api/areas', { name, pin }), 'Área borrada');
+}
+
+function wireEditor() {
+  $('#frm').addEventListener('submit', saveSite);
+  $('#fCancel').addEventListener('click', () => $('#dlg').close());
+  $('#frmArea').addEventListener('submit', saveArea);
+  $('#aCancel').addEventListener('click', () => $('#dlgArea2').close());
+  EMOJIS.forEach(em => { const b = el('button', null, em); b.type = 'button'; b.addEventListener('click', () => { $('#fIcon').value = em; }); $('#emojis').append(b); });
 }
 
 // Buscador: filtra tarjetas al escribir; Enter abre el primer resultado; "/" enfoca
@@ -361,26 +645,30 @@ function wireSearch() {
     let total = 0;
     document.querySelectorAll('.group').forEach(sec => {
       let vis = 0;
-      sec.querySelectorAll('.card').forEach(c => { const ok = !v || c.dataset.q.includes(v); c.hidden = !ok; if (ok) vis++; });
-      sec.hidden = vis === 0; total += vis;
+      sec.querySelectorAll('.item').forEach(c => { const ok = !v || c.dataset.q.includes(v); c.hidden = !ok; if (ok) vis++; });
+      const add = sec.querySelector('.add'); if (add) add.hidden = !!v;
+      sec.hidden = !!v && vis === 0; total += vis;
     });
-    const e = $('#empty'); if (e) e.style.display = total ? 'none' : 'block';
+    const na = document.querySelector('.new-area'); if (na) na.hidden = !!v;
+    const e = $('#empty'); if (e) e.style.display = (v && !total) ? 'block' : 'none';
   };
   q.addEventListener('input', run);
   q.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { const f = document.querySelector('.card:not([hidden])'); if (f) f.click(); }
+    if (e.key === 'Enter') { const f = document.querySelector('.item:not([hidden]) .card'); if (f) f.click(); }
     if (e.key === 'Escape') { q.value = ''; run(); q.blur(); }
   });
   document.addEventListener('keydown', e => {
-    if (e.key === '/' && document.activeElement !== q && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); q.focus(); }
+    if (e.key === '/' && document.activeElement !== q && !/input|textarea|select/i.test(document.activeElement.tagName)) { e.preventDefault(); q.focus(); }
   });
 }
 
 // Resalta el área visible en la barra de navegación
+let SPY = null;
 function wireSpy() {
   if (!('IntersectionObserver' in window)) return;
+  if (SPY) SPY.disconnect();
   const links = [...document.querySelectorAll('.areas a')];
-  const io = new IntersectionObserver(entries => {
+  const io = SPY = new IntersectionObserver(entries => {
     entries.forEach(en => {
       if (en.isIntersecting) links.forEach(l => l.classList.toggle('on', l.getAttribute('href') === '#' + en.target.id));
     });
@@ -389,10 +677,12 @@ function wireSpy() {
 }
 
 (async () => {
-  let s = {};
-  try { s = await loadYaml('config/settings.yaml') || {}; } catch (e) { console.warn(e); }
-  applySettings(s);
-  try { render(await loadYaml('config/services.yaml'), s); wireSearch(); wireSpy(); }
+  try { S = await loadYaml('config/settings.yaml') || {}; } catch (e) { console.warn(e); }
+  applySettings(S);
+  try { API = !!(await api('GET', '/api/health')).ok; } catch { API = false; }
+  if (S.editable === false) API = false;
+  wireEditor(); wireSearch();
+  try { await refresh(); }
   catch (e) {
     $('#main').innerHTML = '';
     const p = el('p', 'msg'); p.append('No se pudo leer config/services.yaml', el('br'), e.message);
