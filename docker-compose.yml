@@ -21,10 +21,10 @@ services:
     environment:
       # Clave general (puede editar todas las áreas y crear o borrar áreas).
       # Si la dejás vacía y no hay claves por área, cualquiera puede editar.
-      ADMIN_PIN: "cambiar-esta-clave"
+      ADMIN_PIN: "ardy30fe"
       # Clave propia de cada área, separadas por punto y coma. Ejemplo:
       # AREA_PINS: "ADMINISTRACIÓN=1111;DEPÓSITO=2222;MAYORISTA=3333"
-      AREA_PINS: ""
+      AREA_PINS: "ADMINISTRACIÓN=1234;MAYORISTA=1234"
     volumes:
       - intranet-config:/data
       # Respaldo automático de services.yaml antes de cada cambio (últimos 50)
