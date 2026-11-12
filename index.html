@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#000000">
+<title>Intranet Patagonia</title>
+<link rel="icon" href="config/logo.png">
+<style>
+  /* ===== Identidad: mismos colores que patagonia-ar.com (negro / blanco / gris claro) ===== */
+  :root {
+    --overlay: .35;
+    --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --black: #000;
+    --ink: #1a1a1a;
+    --muted: #666;
+    --line: #e2e2e2;
+    --paper: #fff;
+    --sand: #f4f3ef;
+    --maxw: 1200px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    color: var(--ink); background: var(--sand);
+    display: flex; flex-direction: column; min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  .skip { position: absolute; left: -9999px; top: 0; background: #fff; color: #000; padding: 8px 12px; z-index: 10; }
+  .skip:focus { left: 8px; }
+
+  /* ----- Barra de anuncios (como "Envío gratis…" del sitio público) ----- */
+  .announce {
+    background: var(--black); color: #fff; text-align: center;
+    font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+    padding: 9px 16px; line-height: 1.5;
+  }
+  .announce a { text-decoration: underline; text-underline-offset: 3px; }
+  .announce[hidden] { display: none; }
+
+  /* ----- Hero con foto de campaña ----- */
+  .hero {
+    position: relative; color: #fff; text-align: center;
+    background: #1d2b36 center / cover no-repeat;
+    padding: clamp(48px, 9vw, 110px) 20px clamp(40px, 7vw, 80px);
+    isolation: isolate;
+  }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,calc(var(--overlay) + .1)) 0%, rgba(0,0,0,var(--overlay)) 45%, rgba(0,0,0,calc(var(--overlay) + .25)) 100%);
+  }
+  .hero img.logo { height: clamp(32px, 5vw, 46px); width: auto; display: inline-block; }
+  .hero h1 {
+    font-weight: 700; font-size: clamp(1.8rem, 5vw, 2.8rem);
+    letter-spacing: .18em; text-transform: uppercase;
+  }
+  .hero .sub {
+    margin-top: 12px; font-size: .85rem; letter-spacing: .32em;
+    text-transform: uppercase; opacity: .9;
+  }
+  .hero .greet {
+    margin-top: 26px; font-size: clamp(1.05rem, 2.4vw, 1.35rem); font-weight: 700;
+    letter-spacing: .02em;
+  }
+  .hero .date { margin-top: 4px; font-size: .85rem; opacity: .85; text-transform: capitalize; }
+
+  /* Buscador */
+  .search {
+    margin: 26px auto 0; max-width: 560px; position: relative;
+  }
+  .search input {
+    width: 100%; font: inherit; font-size: 1rem; color: var(--ink);
+    padding: 15px 52px 15px 48px; border: 0; border-radius: 0;
+    background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.25);
+  }
+  .search input:focus { outline: 3px solid #fff; outline-offset: 2px; }
+  .search svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
+  .search kbd {
+    position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    font: 700 .72rem/1 var(--font); color: var(--muted);
+    border: 1px solid var(--line); padding: 4px 7px;
+  }
+
+  /* Navegación por áreas (como Hombre / Mujer / Niño/a…) */
+  .areas {
+    position: sticky; top: 0; z-index: 5;
+    background: #fff; border-bottom: 1px solid var(--line);
+  }
+  .areas ul {
+    list-style: none; display: flex; gap: 4px; justify-content: center;
+    max-width: var(--maxw); margin: 0 auto; padding: 0 12px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .areas ul::-webkit-scrollbar { display: none; }
+  .areas a {
+    display: block; white-space: nowrap; text-decoration: none;
+    padding: 16px 14px 13px; font-size: .78rem; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    border-bottom: 3px solid transparent;
+  }
+  .areas a:hover, .areas a:focus-visible, .areas a.on { border-bottom-color: var(--black); outline: none; }
+
+  /* ----- Contenido ----- */
+  main {
+    flex: 1; width: 100%; max-width: var(--maxw); margin: 0 auto;
+    padding: 40px 20px 64px; display: flex; flex-direction: column; gap: 44px;
+  }
+  .group { scroll-margin-top: 70px; }
+  .group h2 {
+    font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase;
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 18px;
+  }
+  .group h2 small { font-size: .72rem; font-weight: 400; letter-spacing: .12em; color: var(--muted); }
+  .grid {
+    display: grid; gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  }
+  .card {
+    position: relative; display: flex; flex-direction: column; gap: 6px;
+    min-height: 118px; padding: 20px 20px 18px;
+    background: var(--paper); color: var(--ink); text-decoration: none;
+    border: 1px solid var(--line);
+    transition: background .15s, color .15s, border-color .15s, transform .15s;
+  }
+  .card .ico { font-size: 1.5rem; line-height: 1; margin-bottom: 4px; }
+  .card .name { font-weight: 700; font-size: .95rem; letter-spacing: .1em; text-transform: uppercase; }
+  .card .desc { font-size: .85rem; line-height: 1.45; color: var(--muted); }
+  .card .host { margin-top: auto; padding-top: 8px; font-size: .72rem; color: var(--muted); letter-spacing: .04em; word-break: break-all; }
+  .card .go {
+    position: absolute; right: 16px; top: 18px; font-size: 1.1rem; line-height: 1;
+    transition: transform .15s;
+  }
+  .card:hover, .card:focus-visible { background: var(--black); color: #fff; border-color: var(--black); outline: none; transform: translateY(-2px); }
+  .card:hover .desc, .card:hover .host, .card:focus-visible .desc, .card:focus-visible .host { color: #cfcfcf; }
+  .card:hover .go, .card:focus-visible .go { transform: translateX(3px); }
+  .card:focus-visible { box-shadow: 0 0 0 3px #fff, 0 0 0 5px #000; }
+
+  .msg { text-align: center; color: var(--muted); font-size: .95rem; line-height: 1.6; padding: 24px; }
+  .empty { display: none; }
+
+  /* ----- Pie (negro, como el sitio público) ----- */
+  footer { background: var(--black); color: #fff; }
+  .foot {
+    max-width: var(--maxw); margin: 0 auto; padding: 40px 20px 28px;
+    display: flex; flex-wrap: wrap; gap: 28px; justify-content: space-between; align-items: flex-start;
+  }
+  .foot img { height: 26px; width: auto; }
+  .foot .brand p { margin-top: 12px; font-size: .8rem; line-height: 1.6; color: #bdbdbd; max-width: 420px; }
+  .foot nav { display: flex; flex-wrap: wrap; gap: 10px 26px; }
+  .foot nav a { font-size: .75rem; letter-spacing: .14em; text-transform: uppercase; text-decoration: none; font-weight: 700; }
+  .foot nav a:hover, .foot nav a:focus-visible { text-decoration: underline; text-underline-offset: 4px; outline: none; }
+  .legal {
+    border-top: 1px solid #262626; text-align: center; padding: 14px 20px;
+    font-size: .68rem; letter-spacing: .16em; text-transform: uppercase; color: #8a8a8a;
+  }
+
+  @media (max-width: 600px) {
+    .areas ul { justify-content: flex-start; }
+    .grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card { min-height: 100px; padding: 16px 14px; }
+    .card .host { display: none; }
+    .search kbd { display: none; }
+  }
+  @media (max-width: 380px) { .grid { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Saltar al contenido</a>
+
+<div class="announce" id="announce" hidden></div>
+
+<header class="hero" id="hero">
+  <div id="brand"><h1 id="title">Patagonia</h1></div>
+  <p class="sub" id="subtitle"></p>
+  <p class="greet" id="greet"></p>
+  <p class="date" id="date"></p>
+  <div class="search" role="search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="q" type="search" placeholder="Buscar un sistema o sitio…" aria-label="Buscar un sistema o sitio" autocomplete="off">
+    <kbd>/</kbd>
+  </div>
+</header>
+
+<nav class="areas" id="areas" aria-label="Áreas"><ul></ul></nav>
+
+<main id="main"><p class="msg">Cargando…</p></main>
+
+<footer>
+  <div class="foot">
+    <div class="brand" id="footBrand"><p id="footText"></p></div>
+    <nav id="footLinks" aria-label="Enlaces"></nav>
+  </div>
+  <div class="legal" id="legal">Uso interno</div>
+</footer>
+
+<noscript><p class="msg">Esta página necesita JavaScript habilitado.</p></noscript>
+
+<script src="vendor/js-yaml.min.js"></script>
+<script>
+const $ = (s) => document.querySelector(s);
+const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+const slug = (s) => 'area-' + String(s).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-');
+const norm = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const safeHref = (h) => /^(https?:|mailto:|tel:|\/|\.\/|#)/i.test(String(h).trim()) ? String(h).trim() : null;
+
+async function loadYaml(path) {
+  const r = await fetch(path + '?t=' + Date.now(), { cache: 'no-store' });
+  if (!r.ok) throw new Error(path + ' (' + r.status + ')');
+  return jsyaml.load(await r.text());
+}
+
+function applySettings(s) {
+  s = s || {};
+  const root = document.documentElement;
+  if (s.font) root.style.setProperty('--font', s.font);
+  if (s.overlay !== undefined) root.style.setProperty('--overlay', s.overlay);
+  if (s.background) $('#hero').style.backgroundImage = 'url("' + String(s.background).replace(/"/g, '%22') + '")';
+  const title = s.title || 'Patagonia';
+  document.title = (s.subtitle ? s.subtitle + ' · ' : '') + title;
+  $('#subtitle').textContent = s.subtitle || '';
+
+  // Logo: se mantiene igual que antes (si no hay logo, el título en texto)
+  if (s.logo) {
+    const mk = () => { const i = el('img', 'logo'); i.src = s.logo; i.alt = title; return i; };
+    $('#title').replaceWith(mk());
+    const f = mk(); f.className = ''; $('#footBrand').prepend(f);
+  } else {
+    $('#title').textContent = title;
+    const t = el('strong', null, title.toUpperCase()); t.style.letterSpacing = '.18em';
+    $('#footBrand').prepend(t);
+  }
+
+  // Barra de anuncios opcional
+  if (s.announcement) {
+    const a = $('#announce');
+    const link = s.announcement_href && safeHref(s.announcement_href);
+    if (link) { const l = el('a', null, s.announcement); l.href = link; a.append(l); }
+    else a.textContent = s.announcement;
+    a.hidden = false;
+  }
+
+  $('#footText').textContent = s.footer_text || '';
+  $('#legal').textContent = s.footer || ('Uso interno · ' + title + ' · ' + new Date().getFullYear());
+  (Array.isArray(s.footer_links) ? s.footer_links : []).forEach(it => {
+    Object.entries(it || {}).forEach(([name, href]) => {
+      const h = safeHref(typeof href === 'object' ? href.href : href);
+      if (!h) return;
+      const a = el('a', null, name); a.href = h; a.target = '_blank'; a.rel = 'noopener';
+      $('#footLinks').append(a);
+    });
+  });
+
+  // Saludo y fecha
+  if (s.greeting !== false) {
+    const h = new Date().getHours();
+    $('#greet').textContent = h < 12 ? 'Buen día' : h < 20 ? 'Buenas tardes' : 'Buenas noches';
+    $('#date').textContent = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  }
+}
+
+function hostOf(href) {
+  try { const u = new URL(href, location.href); return u.host + (u.pathname !== '/' ? u.pathname : ''); } catch { return ''; }
+}
+
+function render(groups, s) {
+  s = s || {};
+  const main = $('#main'), nav = $('#areas ul');
+  main.innerHTML = ''; nav.innerHTML = '';
+  if (!Array.isArray(groups) || !groups.length) {
+    main.innerHTML = '<p class="msg">No hay sitios cargados en services.yaml</p>';
+    $('#areas').hidden = true;
+    return;
+  }
+  const defTarget = s.target || null;
+  groups.forEach(g => {
+    Object.entries(g || {}).forEach(([groupName, items]) => {
+      const id = slug(groupName);
+      const sec = el('section', 'group'); sec.id = id;
+      const h2 = el('h2', null, groupName);
+      const grid = el('div', 'grid');
+      let n = 0;
+      (items || []).forEach(it => {
+        Object.entries(it || {}).forEach(([name, cfg]) => {
+          const href = cfg && cfg.href && safeHref(cfg.href);
+          if (!href) return;
+          const a = el('a', 'card');
+          a.href = href;
+          const target = cfg.target || defTarget;
+          if (target) a.target = target;
+          if (target === '_blank') a.rel = 'noopener';
+          if (cfg.icon) a.append(el('span', 'ico', cfg.icon));
+          a.append(el('span', 'name', name));
+          if (cfg.description) a.append(el('span', 'desc', cfg.description));
+          if (s.show_address !== false) a.append(el('span', 'host', hostOf(href)));
+          const go = el('span', 'go', target === '_blank' ? '↗' : '→'); go.setAttribute('aria-hidden', 'true');
+          a.append(go);
+          if (target === '_blank') a.setAttribute('aria-label', name + ' (se abre en una pestaña nueva)');
+          a.dataset.q = norm([groupName, name, cfg.description, href].join(' '));
+          grid.append(a); n++;
+        });
+      });
+      h2.append(el('small', null, n + (n === 1 ? ' sitio' : ' sitios')));
+      sec.append(h2, grid);
+      main.append(sec);
+      const li = el('li'), a = el('a', null, groupName); a.href = '#' + id; li.append(a); nav.append(li);
+    });
+  });
+  main.append(Object.assign(el('p', 'msg empty', 'No hay sitios que coincidan con la búsqueda.'), { id: 'empty' }));
+}
+
+// Buscador: filtra tarjetas al escribir; Enter abre el primer resultado; "/" enfoca
+function wireSearch() {
+  const q = $('#q');
+  const run = () => {
+    const v = norm(q.value.trim());
+    let total = 0;
+    document.querySelectorAll('.group').forEach(sec => {
+      let vis = 0;
+      sec.querySelectorAll('.card').forEach(c => { const ok = !v || c.dataset.q.includes(v); c.hidden = !ok; if (ok) vis++; });
+      sec.hidden = vis === 0; total += vis;
+    });
+    const e = $('#empty'); if (e) e.style.display = total ? 'none' : 'block';
+  };
+  q.addEventListener('input', run);
+  q.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { const f = document.querySelector('.card:not([hidden])'); if (f) f.click(); }
+    if (e.key === 'Escape') { q.value = ''; run(); q.blur(); }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && document.activeElement !== q && !/input|textarea/i.test(document.activeElement.tagName)) { e.preventDefault(); q.focus(); }
+  });
+}
+
+// Resalta el área visible en la barra de navegación
+function wireSpy() {
+  if (!('IntersectionObserver' in window)) return;
+  const links = [...document.querySelectorAll('.areas a')];
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) links.forEach(l => l.classList.toggle('on', l.getAttribute('href') === '#' + en.target.id));
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  document.querySelectorAll('.group').forEach(g => io.observe(g));
+}
+
+(async () => {
+  let s = {};
+  try { s = await loadYaml('config/settings.yaml') || {}; } catch (e) { console.warn(e); }
+  applySettings(s);
+  try { render(await loadYaml('config/services.yaml'), s); wireSearch(); wireSpy(); }
+  catch (e) {
+    $('#main').innerHTML = '';
+    const p = el('p', 'msg'); p.append('No se pudo leer config/services.yaml', el('br'), e.message);
+    $('#main').append(p);
+  }
+})();
+</script>
+</body>
+</html>

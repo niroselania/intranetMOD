@@ -1,0 +1,13 @@
+services:
+  intranet:
+    build: .
+    container_name: intranet
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    # La carpeta config ya viene dentro de la imagen.
+    # Para editarla directo en el servidor (sin redesplegar), copiá la carpeta
+    # config a una ruta fija del servidor y descomentá estas líneas
+    # (usá RUTA ABSOLUTA, no ./config):
+    # volumes:
+    #   - /opt/intranet/config:/usr/share/nginx/html/config

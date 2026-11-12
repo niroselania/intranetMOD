@@ -1,0 +1,32 @@
+# Intranet Patagonia - sitios por área
+# Mismo formato que el services.yaml de Homepage:
+#
+# - NOMBRE DEL GRUPO:
+#     - Nombre del sitio:
+#         href: http://direccion-del-sitio
+#         target: _blank        # opcional (por defecto usa el "target" de settings.yaml)
+#         description: Texto corto que aparece debajo del nombre   # opcional
+#         icon: 📦              # opcional (un emoji)
+#
+# Después de editar este archivo, alcanza con recargar la página (F5).
+# No hay que reiniciar nada.
+
+- LOCAL:
+    - Relaxit:
+        href: https://patagonia.relaxit.com.ar
+        description: Portal de Relaxit
+        icon: 🧾
+    - Pedidos:
+        href: http://192.168.1.94:3000
+        description: Carga y seguimiento de pedidos
+        icon: 📦
+
+- ADMINISTRACIÓN:
+    - Ejemplo sitio 1:
+        href: http://192.168.1.94:8080
+    - Ejemplo sitio 2:
+        href: http://192.168.1.94:8081
+
+- DEPÓSITO:
+    - Ejemplo sitio 3:
+        href: http://192.168.1.94:8082

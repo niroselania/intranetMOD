@@ -1,0 +1,39 @@
+# Apariencia de la intranet (equivalente al settings.yaml de Homepage)
+
+title: Patagonia
+subtitle: Intranet
+
+# Imagen de fondo del encabezado: URL o ruta local (ej: /config/fondo.jpg si la copiás a la carpeta config)
+background: https://cdn.shopify.com/s/files/1/1568/2063/files/Web_Large-smith_drew_00917_BP.jpg?v=1785784480
+
+# Oscurecimiento sobre la foto para que se lea el texto (0 a 1)
+overlay: 0.35
+
+# Tipografía (primero la que use el sitio de patagonia-ar.com si la tenés instalada)
+font: "'Helvetica Neue', Helvetica, Arial, sans-serif"
+
+# Logo (URL o ruta). Vacío = se muestra el título en texto
+logo: /config/logo.png
+
+# ---------- Opcionales (nuevos) ----------
+
+# Barra negra superior para avisos internos, como la del sitio público.
+# Dejala vacía o borrala para ocultarla.
+announcement: "Bienvenidos a la intranet de Patagonia Argentina"
+# announcement_href: https://patagonia-ar.com
+
+# Cómo se abren los sitios por defecto (_blank = pestaña nueva). Cada sitio puede pisarlo con su propio target.
+target: _blank
+
+# Mostrar la dirección debajo de cada sitio (true / false)
+show_address: true
+
+# Saludo ("Buen día", "Buenas tardes"...) y fecha en el encabezado (true / false)
+greeting: true
+
+# Pie de página
+footer_text: "Diseñamos ropa outdoor y equipo para los deportes silenciosos. Estamos en el negocio para salvar nuestro planeta hogar."
+footer: "Uso interno · Patagonia Argentina"
+footer_links:
+  - Sitio público: https://patagonia-ar.com
+  # - Otro enlace: https://...
