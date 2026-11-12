@@ -11,9 +11,9 @@
 
 - LOCAL:
     - Relaxit Local:
-        href: http://patagonia.serveftp.com:8001/login?next=/
+        href: http://patagonia.serveftp.com:8001/
     - Pedidos:
-        href:
+        href: http://patagonia.serveftp.com:7000/
 
 - ADMINISTRACIÓN:
     - Compra Empleados:
