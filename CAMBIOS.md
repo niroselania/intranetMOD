@@ -7,8 +7,9 @@ Nuevo, siguiendo la línea de patagonia-ar.com:
 - Encabezado con la foto de campaña, logo, saludo según la hora y fecha.
 - Buscador de sitios: escribí para filtrar, Enter abre el primero, la tecla "/" lo enfoca, Esc lo limpia.
 - Menú de áreas fijo (LOCAL, ADMINISTRACIÓN, DEPÓSITO…) que marca la sección visible.
-- Sitios como tarjetas blancas; al pasar el mouse se ponen negras (como los botones del sitio público).
-- Opcional por sitio: description (texto corto) e icon (emoji). Se muestra la dirección de cada sitio (show_address).
+- La foto de campaña queda de fondo en toda la página y los sitios son tarjetas translúcidas (efecto vidrio esmerilado). Al pasar el mouse se ponen blancas, se elevan y las cruza un brillo.
+- Las direcciones de los sitios no se muestran.
+- Opcional por sitio: description (texto corto) e icon (emoji).
 - Pie negro con texto de marca y enlaces (footer_text, footer, footer_links).
 - Mejor lectura en celulares, navegación con teclado y accesibilidad.
 - nginx: compresión, cabeceras de seguridad y caché de la librería.
