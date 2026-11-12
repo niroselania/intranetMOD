@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#000000">
+<meta name="version" content="2026-11-12 encabezado compacto">
+<meta http-equiv="Cache-Control" content="no-cache">
 <title>Intranet Patagonia</title>
 <link rel="icon" href="config/logo.png">
 <style>
@@ -52,7 +54,7 @@
   .hero {
     position: relative; color: #fff; text-align: center;
     background: transparent;
-    padding: clamp(48px, 9vw, 110px) 20px clamp(40px, 7vw, 80px);
+    padding: clamp(22px, 3.5vw, 40px) 20px clamp(20px, 3vw, 32px);
     isolation: isolate;
   }
   .hero::before {
@@ -65,26 +67,26 @@
     letter-spacing: .18em; text-transform: uppercase;
   }
   .hero .sub {
-    margin-top: 12px; font-size: .85rem; letter-spacing: .32em;
+    margin-top: 6px; font-size: .78rem; letter-spacing: .32em;
     text-transform: uppercase; opacity: .9;
   }
   .hero .greet {
-    margin-top: 26px; font-size: clamp(1.05rem, 2.4vw, 1.35rem); font-weight: 700;
+    margin-top: 12px; font-size: clamp(1rem, 2vw, 1.2rem); font-weight: 700;
     letter-spacing: .02em;
   }
-  .hero .date { margin-top: 4px; font-size: .85rem; opacity: .85; text-transform: capitalize; }
+  .hero .date { margin-top: 2px; font-size: .8rem; opacity: .85; }
 
   /* Buscador */
   .search {
-    margin: 26px auto 0; max-width: 560px; position: relative;
+    margin: 14px auto 0; max-width: 440px; position: relative;
   }
   .search input {
-    width: 100%; font: inherit; font-size: 1rem; color: var(--ink);
-    padding: 15px 52px 15px 48px; border: 0; border-radius: 0;
+    width: 100%; font: inherit; font-size: .9rem; color: var(--ink);
+    padding: 10px 44px 10px 40px; border: 0; border-radius: 0;
     background: #fff; box-shadow: 0 6px 24px rgba(0,0,0,.25);
   }
   .search input:focus { outline: 3px solid #fff; outline-offset: 2px; }
-  .search svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--muted); pointer-events: none; }
+  .search svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--muted); pointer-events: none; }
   .search kbd {
     position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
     font: 700 .72rem/1 var(--font); color: var(--muted);
@@ -107,7 +109,7 @@
   .areas ul::-webkit-scrollbar { display: none; }
   .areas a {
     display: block; white-space: nowrap; text-decoration: none;
-    padding: 16px 14px 13px; font-size: .78rem; font-weight: 700;
+    padding: 9px 12px 7px; font-size: .72rem; font-weight: 700;
     letter-spacing: .14em; text-transform: uppercase;
     border-bottom: 3px solid transparent;
   }
@@ -117,9 +119,9 @@
   /* ----- Contenido ----- */
   main {
     flex: 1; width: 100%; max-width: var(--maxw); margin: 0 auto;
-    padding: 40px 20px 64px; display: flex; flex-direction: column; gap: 44px;
+    padding: 28px 20px 64px; display: flex; flex-direction: column; gap: 44px;
   }
-  .group { scroll-margin-top: 70px; }
+  .group { scroll-margin-top: 50px; }
   .group h2 {
     font-size: clamp(1.15rem, 2.4vw, 1.5rem); font-weight: 700;
     letter-spacing: .06em; text-transform: uppercase;
@@ -431,6 +433,7 @@ function applySettings(s) {
 
   $('#footText').textContent = s.footer_text || '';
   $('#legal').textContent = s.footer || ('Uso interno · ' + title + ' · ' + new Date().getFullYear());
+  $('#legal').append(el('span', null, ' · v2026.11.12'));
   (Array.isArray(s.footer_links) ? s.footer_links : []).forEach(it => {
     Object.entries(it || {}).forEach(([name, href]) => {
       const h = safeHref(typeof href === 'object' ? href.href : href);
@@ -444,7 +447,8 @@ function applySettings(s) {
   if (s.greeting !== false) {
     const h = new Date().getHours();
     $('#greet').textContent = h < 12 ? 'Buen día' : h < 20 ? 'Buenas tardes' : 'Buenas noches';
-    $('#date').textContent = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const d = new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    $('#date').textContent = d.charAt(0).toUpperCase() + d.slice(1);
   }
 }
 
