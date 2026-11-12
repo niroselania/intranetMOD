@@ -267,12 +267,23 @@
   .btn.light:hover { background: #fff; color: #000; }
   .btn[disabled] { opacity: .5; cursor: wait; }
 
+  .editbtn {
+    position: fixed; right: 20px; bottom: 20px; z-index: 40; cursor: pointer;
+    font: 700 .75rem var(--font); letter-spacing: .14em; text-transform: uppercase;
+    padding: 13px 20px; color: #fff; border-radius: 30px;
+    background: rgba(0,0,0,.55); border: 1px solid rgba(255,255,255,.4);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.3); transition: background .2s, color .2s;
+  }
+  .editbtn:hover, .editbtn:focus-visible { background: #fff; color: #000; outline: none; }
+  .editbtn.on { background: #fff; color: #000; }
   .toast {
     position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 20px); z-index: 50;
     background: #000; color: #fff; padding: 13px 22px; font-size: .85rem; letter-spacing: .04em;
     border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,.35); opacity: 0; pointer-events: none;
     transition: opacity .25s, transform .25s;
   }
+  .toast { bottom: 80px; }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
   @media (max-width: 600px) {
@@ -336,9 +347,6 @@
       </label>
     </div>
     <div class="emojis" id="emojis" aria-label="Íconos sugeridos"></div>
-    <label id="pinWrap">Clave del área
-      <input id="fPin" type="password" autocomplete="off" placeholder="Pedísela al responsable del área">
-    </label>
     <p class="err" id="fErr" role="alert"></p>
     <div class="actions">
       <button type="button" class="btn ghost" id="fCancel">Cancelar</button>
@@ -351,7 +359,6 @@
   <form id="frmArea" method="dialog" novalidate>
     <h3>Nueva área<small>Por ejemplo: RRHH, MARKETING, LOGÍSTICA</small></h3>
     <label>Nombre del área <input id="aName" maxlength="40" required></label>
-    <label id="aPinWrap">Clave general <input id="aPin" type="password" autocomplete="off"></label>
     <p class="err" id="aErr" role="alert"></p>
     <div class="actions">
       <button type="button" class="btn ghost" id="aCancel">Cancelar</button>
@@ -359,6 +366,20 @@
     </div>
   </form>
 </dialog>
+
+<dialog id="dlgLogin">
+  <form id="frmLogin" method="dialog" novalidate>
+    <h3>Modo edición<small>Ingresá la clave de tu área para agregar o modificar sitios</small></h3>
+    <label>Clave <input id="lPin" type="password" autocomplete="current-password" required></label>
+    <p class="err" id="lErr" role="alert"></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="lCancel">Cancelar</button>
+      <button type="submit" class="btn" id="lSave">Entrar</button>
+    </div>
+  </form>
+</dialog>
+
+<button type="button" class="editbtn" id="editBtn" hidden>🔒 Editar</button>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -432,10 +453,18 @@ function hostOf(href) {
 }
 
 // ===== Estado =====
-let S = {}, GROUPS = [], API = false, META = { pin: {}, pin_admin: false };
-const PIN_KEY = 'intranet-pin:';
-const getPin = (k) => sessionStorage.getItem(PIN_KEY + k) || '';
-const setPin = (k, v) => v ? sessionStorage.setItem(PIN_KEY + k, v) : sessionStorage.removeItem(PIN_KEY + k);
+let S = {}, GROUPS = [], API = false;
+// Sesión de edición: { pin, admin, areas } — se borra al cerrar el navegador
+let EDIT = (() => { try { return JSON.parse(sessionStorage.getItem('intranet-edit')) || null; } catch { return null; } })();
+const canEdit = (area) => API && EDIT && (EDIT.admin || EDIT.areas.includes(area));
+const isAdmin = () => API && EDIT && EDIT.admin;
+function setEdit(v) {
+  EDIT = v;
+  v ? sessionStorage.setItem('intranet-edit', JSON.stringify(v)) : sessionStorage.removeItem('intranet-edit');
+  const b = $('#editBtn');
+  b.textContent = v ? '✓ Salir de edición' : '🔒 Editar';
+  b.classList.toggle('on', !!v);
+}
 
 function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
@@ -451,7 +480,6 @@ async function api(method, path, body) {
 
 async function refresh() {
   GROUPS = await loadYaml('config/services.yaml') || [];
-  if (API) { try { META = await api('GET', '/api/meta'); } catch {} }
   render();
   $('#q').dispatchEvent(new Event('input'));
   wireSpy();
@@ -492,7 +520,7 @@ function render() {
           a.title = name;
           item.dataset.q = norm([groupName, name, cfg.description].join(' '));
           item.append(a);
-          if (API) {
+          if (canEdit(groupName)) {
             const tools = el('div', 'tools');
             const mk = (txt, label, fn, cls) => { const b = el('button', 'tbtn' + (cls ? ' ' + cls : ''), txt); b.type = 'button'; b.title = label; b.setAttribute('aria-label', label + ' ' + name); b.addEventListener('click', fn); return b; };
             const ref = { area: groupName, index: idx, original: name, cfg };
@@ -505,7 +533,7 @@ function render() {
           grid.append(item); n++;
         });
       });
-      if (API) {
+      if (canEdit(groupName)) {
         const add = el('button', 'add'); add.type = 'button';
         add.append(el('span', 'plus', '+'), el('span', null, 'Agregar'));
         add.setAttribute('aria-label', 'Agregar sitio en ' + groupName);
@@ -513,7 +541,7 @@ function render() {
         grid.append(add);
       }
       h2.append(el('small', null, n + (n === 1 ? ' sitio' : ' sitios')));
-      if (API && n === 0) {
+      if (isAdmin() && n === 0) {
         const d = el('button', 'area-del', 'Borrar área'); d.type = 'button';
         d.addEventListener('click', () => delArea(groupName));
         h2.append(d);
@@ -523,7 +551,7 @@ function render() {
       const li = el('li'), a = el('a', null, groupName); a.href = '#' + id; li.append(a); nav.append(li);
     });
   });
-  if (API) {
+  if (isAdmin()) {
     const b = el('button', 'btn light new-area', '+ Nueva área'); b.type = 'button';
     b.addEventListener('click', openArea);
     main.append(b);
@@ -545,9 +573,6 @@ function openSite(area, ref) {
   $('#fDesc').value = c.description || '';
   $('#fIcon').value = c.icon || '';
   $('#fTarget').value = c.target || S.target || '_blank';
-  const need = !!META.pin[area];
-  $('#pinWrap').hidden = !need || !!getPin(area);
-  $('#fPin').value = getPin(area);
   $('#fErr').textContent = '';
   $('#dlg').showModal();
   $('#fName').focus();
@@ -559,7 +584,7 @@ async function saveSite(ev) {
   const body = {
     area, name: $('#fName').value.trim(), href: $('#fHref').value.trim(),
     description: $('#fDesc').value.trim(), icon: $('#fIcon').value.trim(),
-    target: $('#fTarget').value, pin: $('#fPin').value
+    target: $('#fTarget').value, pin: EDIT && EDIT.pin
   };
   if (!body.name) return $('#fErr').textContent = 'Poné un nombre.';
   if (!/^https?:\/\//i.test(body.href)) return $('#fErr').textContent = 'El link tiene que empezar con http:// o https://';
@@ -567,26 +592,20 @@ async function saveSite(ev) {
   $('#fSave').disabled = true;
   try {
     await api(ref ? 'PUT' : 'POST', '/api/sites', body);
-    setPin(area, body.pin);
     $('#dlg').close();
     toast(ref ? 'Cambios guardados' : 'Sitio agregado en ' + area);
     await refresh();
   } catch (e) {
-    if (e.status === 401) { setPin(area, ''); $('#pinWrap').hidden = false; $('#fPin').value = ''; $('#fPin').focus(); }
+    if (e.status === 401) { $('#dlg').close(); sessionExpired(); return; }
     $('#fErr').textContent = e.message;
   } finally { $('#fSave').disabled = false; }
 }
 
-async function askPin(key, admin) {
-  if (!(admin ? META.pin_admin : META.pin[key])) return '';
-  return getPin(key) || prompt(admin ? 'Clave general:' : 'Clave del área ' + key + ':') || null;
-}
+function sessionExpired() { setEdit(null); render(); toast('La clave ya no es válida. Volvé a entrar en modo edición.'); }
 
 async function withPin(key, admin, fn, okMsg) {
-  const pin = await askPin(key, admin);
-  if (pin === null) return;
-  try { await fn(pin); setPin(key, pin); toast(okMsg); await refresh(); }
-  catch (e) { if (e.status === 401) setPin(key, ''); toast(e.message); }
+  try { await fn(EDIT && EDIT.pin); toast(okMsg); await refresh(); }
+  catch (e) { if (e.status === 401) sessionExpired(); else toast(e.message); }
 }
 
 function delSite(ref) {
@@ -604,22 +623,20 @@ function moveSite(ref, move) {
 
 function openArea() {
   $('#aName').value = ''; $('#aErr').textContent = '';
-  $('#aPinWrap').hidden = !META.pin_admin || !!getPin('__admin');
-  $('#aPin').value = getPin('__admin');
   $('#dlgArea2').showModal(); $('#aName').focus();
 }
 
 async function saveArea(ev) {
   ev.preventDefault();
-  const name = $('#aName').value.trim(), pin = $('#aPin').value;
+  const name = $('#aName').value.trim(), pin = EDIT && EDIT.pin;
   if (!name) return $('#aErr').textContent = 'Poné un nombre.';
   $('#aSave').disabled = true;
   try {
     await api('POST', '/api/areas', { name, pin });
-    setPin('__admin', pin); $('#dlgArea2').close(); toast('Área creada'); await refresh();
+    $('#dlgArea2').close(); toast('Área creada'); await refresh();
     const sec = document.getElementById(slug(name.toUpperCase())); if (sec) sec.scrollIntoView();
   } catch (e) {
-    if (e.status === 401) { setPin('__admin', ''); $('#aPinWrap').hidden = false; }
+    if (e.status === 401) { $('#dlgArea2').close(); sessionExpired(); return; }
     $('#aErr').textContent = e.message;
   } finally { $('#aSave').disabled = false; }
 }
@@ -629,7 +646,31 @@ function delArea(name) {
   withPin('__admin', true, pin => api('DELETE', '/api/areas', { name, pin }), 'Área borrada');
 }
 
+async function doLogin(pin) {
+  const r = await api('POST', '/api/login', { pin });
+  setEdit({ pin, admin: !!r.admin, areas: r.areas || [] });
+  render(); $('#q').dispatchEvent(new Event('input'));
+  if (r.open) toast('Atención: no hay claves configuradas, cualquiera puede editar.');
+  else toast(r.admin ? 'Modo edición: todas las áreas' : 'Modo edición: ' + r.areas.join(', '));
+}
+
 function wireEditor() {
+  const b = $('#editBtn');
+  b.hidden = !API;
+  setEdit(API ? EDIT : null);
+  b.addEventListener('click', () => {
+    if (EDIT) { setEdit(null); render(); $('#q').dispatchEvent(new Event('input')); toast('Saliste del modo edición'); return; }
+    $('#lPin').value = ''; $('#lErr').textContent = '';
+    $('#dlgLogin').showModal(); $('#lPin').focus();
+  });
+  $('#lCancel').addEventListener('click', () => $('#dlgLogin').close());
+  $('#frmLogin').addEventListener('submit', async ev => {
+    ev.preventDefault();
+    $('#lSave').disabled = true;
+    try { await doLogin($('#lPin').value); $('#dlgLogin').close(); }
+    catch (e) { $('#lErr').textContent = e.message; $('#lPin').select(); }
+    finally { $('#lSave').disabled = false; }
+  });
   $('#frm').addEventListener('submit', saveSite);
   $('#fCancel').addEventListener('click', () => $('#dlg').close());
   $('#frmArea').addEventListener('submit', saveArea);

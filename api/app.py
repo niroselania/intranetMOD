@@ -157,6 +157,28 @@ def needs_pin(area=None, admin_only=False):
     return (not admin_only) and bool(area and area.upper() in AREA_PINS)
 
 
+def login(ip, pin):
+    """Devuelve qué puede editar quien tiene esta clave."""
+    n, since = FAILS.get(ip, (0, 0))
+    if n >= 8 and time.time() - since < 300:
+        raise ApiError(429, "Demasiados intentos. Probá de nuevo en 5 minutos")
+    areas = [site_name(g) for g in load() if isinstance(g, dict)]
+    if not ADMIN_PIN and not AREA_PINS:
+        return {"ok": True, "admin": True, "areas": areas, "open": True}
+    pin = str(pin or "")
+    if not pin:
+        raise ApiError(401, "Ingresá la clave")
+    if ADMIN_PIN and hmac.compare_digest(pin, ADMIN_PIN):
+        FAILS.pop(ip, None)
+        return {"ok": True, "admin": True, "areas": areas}
+    mine = [a for a in areas if a.upper() in AREA_PINS and hmac.compare_digest(pin, AREA_PINS[a.upper()])]
+    if mine:
+        FAILS.pop(ip, None)
+        return {"ok": True, "admin": False, "areas": mine}
+    FAILS[ip] = (n + 1, since if n else time.time())
+    raise ApiError(401, "Clave incorrecta")
+
+
 # ---------- acciones ----------
 def handle(method, path, body, ip):
     if method == "GET" and path == "/api/health":
@@ -166,6 +188,9 @@ def handle(method, path, body, ip):
         return {"ok": True,
                 "pin": {a: needs_pin(a) for a in areas},
                 "pin_admin": needs_pin(admin_only=True)}
+
+    if method == "POST" and path == "/api/login":
+        return login(ip, body.get("pin"))
 
     with LOCK:
         data = load()

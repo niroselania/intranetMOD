@@ -10,6 +10,8 @@ Se mantiene: logo (config/logo.png), título "Patagonia", tipografía, foto de f
 - Menú de áreas fijo y pie de página translúcido.
 
 ## Cargar sitios desde la web (NUEVO)
+- Abajo a la derecha está el botón "🔒 Editar": pide la clave y recién ahí aparecen los botones de edición,
+  solo en las áreas que esa clave puede modificar. "Salir de edición" vuelve al modo consulta.
 - Cada área tiene una tarjeta "+ Agregar": nombre, link, descripción, ícono y si se abre en pestaña nueva.
 - Al pasar el mouse por un sitio aparecen: ← → (cambiar orden), ✎ (editar) y ✕ (borrar).
 - Botón "+ Nueva área" al final. Un área vacía muestra "Borrar área".
@@ -22,7 +24,8 @@ Se mantiene: logo (config/logo.png), título "Patagonia", tipografía, foto de f
 - AREA_PINS: clave propia de cada área, ej. "ADMINISTRACIÓN=1111;DEPÓSITO=2222;MAYORISTA=3333".
   Cada área edita solo lo suyo. Un área sin clave propia se edita con la clave general.
 - Si dejás las dos vacías, cualquiera en la red puede editar (no recomendado).
-- La clave se pide una vez y se recuerda hasta cerrar el navegador.
+- La clave se pide al entrar en modo edición y se recuerda hasta cerrar el navegador.
+- Para confirmar qué claves tomó el servidor: docker logs intranet-api (primera línea).
 - Después de cambiar claves: docker compose up -d
 
 ## Despliegue
